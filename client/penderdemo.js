@@ -97,7 +97,7 @@ var Bots = new function () {
     var self = this;
     this.init = function() {
 	console.log("initing");
-        texid = Pender.loadImage("client/assets/build_bot_map_med.png");
+        texid = Pender.loadImage("demos/client/assets/build_bot_map_med.png");
 	for (var i = 0; i < self.numb; i++) {
 	    console.log("newbot");
 	    var anim = new Animation (texid, 9, 4, 3, 126, 126, 1);
