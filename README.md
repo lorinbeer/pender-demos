@@ -8,6 +8,10 @@ Pender2D is a Hardware accelerated Canvas context for mobile devices.
 
 the rest of the pender project
 
+##client
+
+client is a poorly named animation demo utilizing Pender. A client project is compatbile with any pender version 0.1a(demoable) or higher
+
 ``````````````````````````````````
 [Pender Main]()
 
