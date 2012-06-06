@@ -4,13 +4,15 @@ This repo contains demonstrations of the Pender project. Each top level director
 
 ##Pender
 
-Pender2D is a Hardware accelerated Canvas context for mobile devices.
+Pender is a 2D Hardware accelerated Canvas context for mobile devices.
 
-the rest of the pender project
 
 ##client
 
 client is a poorly named animation demo utilizing Pender. A client project is compatbile with any pender version 0.1a(demoable) or higher
+
+
+the rest of the Pender project
 
 ``````````````````````````````````
 [Pender Android](https://github.com/doggerelverse/Pender-android)
