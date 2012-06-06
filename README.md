@@ -12,16 +12,15 @@ the rest of the pender project
 
 client is a poorly named animation demo utilizing Pender. A client project is compatbile with any pender version 0.1a(demoable) or higher
 
-``````````````````````````````````
-[Pender Android](https://github.com/doggerelverse/Pender-android)
 
-[Pender iOS](https://github.com/doggerelverse/Pender-ios)
+* [Pender Android](https://github.com/doggerelverse/Pender-android)
 
-[Pender Blackberry](https://github.com/doggerelverse/Pender-blackberry)
+* [Pender iOS](https://github.com/doggerelverse/Pender-ios)
 
-[Pender Windows Phone 7](https://github.com/doggerelverse/Pender-wp7)
+* [Pender Blackberry](https://github.com/doggerelverse/Pender-blackberry)
 
-[Pender Desktop](https://github.com/doggerelverse/Pender-desktop)
+* [Pender Windows Phone 7](https://github.com/doggerelverse/Pender-wp7)
 
-[Pender demos](https://github.com/doggerelverse/Pender-demos)(here)
-``````````````````````````````````
+* [Pender Desktop](https://github.com/doggerelverse/Pender-desktop)
+
+* [Pender demos](https://github.com/doggerelverse/Pender-demos)(here)
