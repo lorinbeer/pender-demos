@@ -1,127 +1,206 @@
-//==============================================================================
+/**
+ * Copyright 2012 Adobe Systems Incorporated
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+/**
+ * Pender Client Demo
+ * 
+ * basic demo of client app using Pender
+ *
+ * Lorin Beer
+ * lorin@adobe.com 
+ */
+
+
+/**
+ * container for art resource meta data
+ */
+var buildbotmeta = {
+    "framemap" : "demos/client/assets/build_bot_map.png",
+    "texid" : 0,
+    "framenumb" : 9,
+    "border" : 1,
+    "columns" : 4,
+    "rows" : 3,
+    "height" : 126,
+    "width" : 126
+}
+
+
+/**
+ * 2D coordinate
+ */
 function Point(x,y) {
     this.x  = x || 0;
     this.y = y || 0;
 }
-//==============================================================================
+
 
 /**
  * storage class for animation data
  */
-function Animation(framemap, framenumb, cols, rows, framewidth, frameheight, bordersize, initialFrame ) {
-    this._currentframe = initialFrame || 0;
-    this._frames = [];
-    this._framemap = framemap;
-    this._framewidth = framewidth;
-    this._frameheight = frameheight;
-    this._borderwidth = bordersize;
+function Animation(data,initialframe) {
+    this._currentframe = initialframe || 0; //optional parameter
+    this._frames = []; //coordinate of top left texture coordinate for each frame 
+    //copy the data out
+    this._framemap = data.framemap; //framemap matching the data
+    this._texid = data.texid;
+    this._framenumb = data.framenumb;
+    this._borderwidth = data.border;
+    this._cols = data.columns;
+    this._rows = data.rows;
+    this._height = data.height;
+    this._width = data.width;
 
     /**
      * currently oscillates, can be changed to provide custom frame updating
-     * on a per AnimatedSprite basis
+     * on a per Animation basis
      */
-    this._frameupdate= function() {
-	
-	this._currentframe += 1;
-	if( this._currentframe >= this._frames.length ) { this._currentframe = -(this._currentframe-1); }
-
+    this._frameupdate= function() { 
+        this._currentframe += 1;
+        if( this._currentframe >= this._frames.length ) {
+            this._currentframe = -(this._currentframe-1); 
+        }
     }
-   
+    
     this.initFrames = function(framenumb) {
-	    var i = 0;
-	    var done = false;
-	    var top = new Point(0,0);
-	    
-	    for (var row  = 0; row < rows && !done; row++) {
-		for (var col = 0; col < cols && !done; col++) {
-		    top = new Point( col * (frameheight+1)+(col+1)*bordersize, row * (framewidth+1) +(row+1)* bordersize);
-		    console.log(top);
-		    this._frames.push ( top );
-		    i+=1;
-		    if( i >= framenumb ) { done = true; }
-		}
-	    }
+       var i = 0;
+        var done = false;
+        var top = new Point();
+        for (var row  = 0; row < this._rows && !done; row++) {
+            for (var col = 0; col < this._cols && !done; col++) {
+                top = new Point( col * (this._height+1)+(col+1) * this._borderwidth, row * (this._width+1) + (row+1) * this._borderwidth);
+                this._frames.push ( top );
+                
+                i+=1;
+                if( i >= framenumb ) { 
+                    done = true; 
+                }
+            }
+        }
     }
-    this.initFrames( framenumb );
+    this.initFrames (this._framenumb);
 
+    /**
+     *
+     */
+    this.draw = function(dx, dy, dWidth, dHeight) {  
+        //absolute value of current frame index is used, allowing for negative frame counts
+        var curframe = this._currentframe<0? -1 * this._currentframe : this._currentframe;
+        var frametop = this._frames[curframe];
 
-    this.draw = function(texid, dx, dy, dWidth, dHeight) {
-	//absolute value of current frame index is used, allowing for negative frame counts
-       	var curframe = this._currentframe<0? -1 * this._currentframe : this._currentframe;
-	var frametop = this._frames[curframe];
-	//console.log( this._frames[curframe], this._framewidth, this._frameheight, dWidth, dHeight);
-	Pender.canvas.drawImage(Pender.getImage(texid), frametop.x, frametop.y, this._framewidth, this._frameheight,
-			     dx, dy, dWidth, dHeight);
-
-	//Pender.ctx.drawImage( Pender.getImage(0), frametop.x, frametop.y, this._framewidth, this._frameheight, dx, dy, this._framewidth, this._frameheight   );
-	this._frameupdate();
+        Pender.canvas.drawImage (Pender.getImage(this._texid), frametop.x, frametop.y, this._width, this._height,
+                                 dx, dy, dWidth, dHeight);
+        //Pender.ctx.drawImage( Pender.getImage(0), frametop.x, frametop.y, this._framewidth, this._frameheight, dx, dy, this._framewidth, this._frameheight   );
+        this._frameupdate();
     }
 
 
 }
-//==============================================================================
+
 /**
- *
+ * animated 
  */
 function AnimatedSprite(anim) {
+    //2d coordinate of sprite
     this.xpos = 0;
     this.ypos = 0;
+    //2d velocity of sprite
     this.xvel = Math.random()*5;
     this.yvel = Math.random()*5;
+    //size of sprite, allows scaling of animdata texture
     this.width = 128;
     this.height = 128;
+    //animation associated with this sprite, can differ on a sprite by sprite basis
     this._animation = anim;
+    //self reference
     var self = this;
     
-   this.draw = function(texid) {
-	self.xpos = self.xpos+ self.xvel;
-	self.ypos = self.ypos+ self.yvel;
-	if( self.xpos < 0 || self.xpos >= 400-self.width/*Pender.canvas.width*/) {
-	    self.xvel = self.xvel * -1; 
-	}
-	if(self.ypos < 0 || self.ypos >= 400-self.height/*Pender.canvas.height */) { 
-	    self.yvel = self.yvel * -1; 
-	}
-	
-	this._animation.draw( texid, self.xpos, self.ypos, self.width, self.height );
+    /**
+     * update the sprite by time delta
+     */
+     this.update = function(delta) {
+         
+     };
+    /**
+     * draw this sprite at the current location
+     */
+    this.draw = function() {
+        self.xpos = self.xpos+ self.xvel;
+        self.ypos = self.ypos+ self.yvel;
+        if( self.xpos < 0 || self.xpos >= Pender.width - self.width/*Pender.canvas.width*/) {
+            self.xvel = self.xvel * -1; 
+        }
+        if(self.ypos < 0 || self.ypos >= Pender.height - self.height/*Pender.canvas.height */) { 
+            self.yvel = self.yvel * -1; 
+        }
+    
+        self._animation.draw(self.xpos, self.ypos, self.width, self.height );
     };
 }
-//==============================================================================
+
 /**
- *
+ * global object containing the important parts of our app
  */
 var Bots = new function () {
-    this.numb = 12;
+    //number of bots to be displayed
+    this.numb = 10;
+    //array containing the Bot objects
     this.bots = [];
-    this.texid = 0;
+    //the texture id generated by Pender for the bot framemap
+    this.texid = 0; //uniquely identifies a texture resource
+    
+    //self reference
     var self = this;
+    
+    /**
+     * initialize Bots with current settings
+     */
     this.init = function() {
-	console.log("initing");
-        texid = Pender.loadImage("demos/client/assets/build_bot_map_med.png");
-	for (var i = 0; i < self.numb; i++) {
-	    console.log("newbot");
-	    var anim = new Animation (texid, 9, 4, 3, 126, 126, 1);
-	    self.bots.push (new AnimatedSprite(anim));
-	}
-    };
-
-    this.testdraw = function() { 
-	Pender.canvas.clearRect(0,0,Pender.width,Pender.height);
-	Pender.canvas.fillStyle = "rgb(0,0,0)"; 
-	Pender.canvas.fillRect (10, 10, Pender.width, Pender.height);
-	self.bots[0].draw(self.texid);
-    };
-
-    this.draw =  function() {
-	Pender.canvas.clearRect(0,0,Pender.width, Pender.height);
-      	for(var i = 0; i < self.numb; i++) {
-	    self.bots[i].draw(self.texid);    	     
-	}
+        //load the art resources specified in the meta data
+        self.texid = Pender.loadImage (buildbotmeta.framemap);
+        buildbotmeta.texid = self.texid;
+        //create our bots
+        for (var i = 0; i < self.numb; i++) {
+            //for each bot, an animation object is created
+            var anim = new Animation (buildbotmeta); //buildbotmeta contains all the data required
+            //push a new bot, initialized with the animation just created
+            self.bots.push (new AnimatedSprite(anim));
+        }
     };
     
+    /**
+     * redraw the scene
+     */
+    this.draw =  function() {
+        //clear the entire screen (no blitting yet)
+        Pender.canvas.clearRect(0,0,Pender.width,Pender.height );
+        //draw each bot
+        for(var i = 0; i < self.numb; i++) {
+            self.bots[i].draw();           
+        }
+    };
 }
 
+/**
+ * main entry point for Pender
+ */
 function init() {
+    //initialize our global object
     Bots.init();
+    //register our draw function and the desired interval with Pender
+    Pender.setInterval(Bots.draw,50);
 }
-
