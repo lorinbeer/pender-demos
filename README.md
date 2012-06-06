@@ -4,9 +4,8 @@ This repo contains demonstrations of the Pender project. Each top level director
 
 ##Pender
 
-Pender2D is a Hardware accelerated Canvas context for mobile devices.
+Pender is a 2D Hardware accelerated Canvas context for mobile devices.
 
-the rest of the pender project
 
 ##client
 
