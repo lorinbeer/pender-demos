@@ -40,6 +40,7 @@ var buildbotmeta = {
 };
 
 
+
 /**
  * 2D coordinate
  */
@@ -143,7 +144,6 @@ function AnimatedSprite(anim) {
     this.animation = anim;
     //self reference
     var self = this;
-
     /**
      * update the sprite by time delta
      */
@@ -183,7 +183,6 @@ var Bots = function () {
 
     //self reference
     var self = this;
-
     /**
      * initialize Bots with current settings
      */
@@ -213,6 +212,7 @@ var Bots = function () {
         for (i = 0; i < self.numb; i += 1) {
             self.bots[i].draw();
         }
+
     };
 };
 
