@@ -12,18 +12,14 @@ Pender is a 2D Hardware accelerated Canvas context for mobile devices.
 client is a poorly named animation demo utilizing Pender. A client project is compatbile with any pender version 0.1a(demoable) or higher
 
 
-the rest of the Pender project
+* [Pender Android](https://github.com/doggerelverse/Pender-android)
 
-``````````````````````````````````
-[Pender Android](https://github.com/doggerelverse/Pender-android)
+* [Pender iOS](https://github.com/doggerelverse/Pender-ios)
 
-[Pender iOS](https://github.com/doggerelverse/Pender-ios)
+* [Pender Blackberry](https://github.com/doggerelverse/Pender-blackberry)
 
-[Pender Blackberry](https://github.com/doggerelverse/Pender-blackberry)
+* [Pender Windows Phone 7](https://github.com/doggerelverse/Pender-wp7)
 
-[Pender Windows Phone 7](https://github.com/doggerelverse/Pender-wp7)
+* [Pender Desktop](https://github.com/doggerelverse/Pender-desktop)
 
-[Pender Desktop](https://github.com/doggerelverse/Pender-desktop)
-
-[Pender demos](https://github.com/doggerelverse/Pender-demos)(here)
-``````````````````````````````````
+* [Pender demos](https://github.com/doggerelverse/Pender-demos)(here)
