@@ -31,6 +31,7 @@
 var buildbotmeta = {
     "framemap" : "demos/client/assets/build_bot_map.png",
     "texid" : 0,
+    "fps" : 12.0,
     "framenumb" : 9,
     "border" : 1,
     "columns" : 4,
@@ -59,6 +60,9 @@ function Animation(data, initialframe) {
     //copy the data out
     this.framemap = data.framemap; //framemap matching the data
     this.texid = data.texid;
+    this.fps = data.fps;
+    this.deltat = 1.0 / (data.fps / 1000.0); //adjust to ms per frame
+    this.lastdraw = new Date().getTime();
     this.framenumb = data.framenumb;
     this.borderwidth = data.border;
     this.cols = data.columns;
@@ -108,12 +112,10 @@ function Animation(data, initialframe) {
     /**
      *
      */
-    this.draw = function (dx, dy, dWidth, dHeight) {
-        //absolute value of current frame index is used
-        var curframe = this.currentframe < 0 ? this.currentframe * -1 :
-                                               this.currentframe,
+    this.draw = function (dx, dy, dWidth, dHeight, tdelta) {
+        var d = new Date().getTime();
+        var curframe = this.currentframe < 0 ? this.currentframe * -1 : this.currentframe;
             frametop = this.frames[curframe];
-
         Pender.canvas.drawImage(Pender.getImage(this.texid),
                                 frametop.x,
                                 frametop.y,
@@ -122,8 +124,14 @@ function Animation(data, initialframe) {
                                 dx,
                                 dy,
                                 dWidth,
-                                dHeight);
-        this.frameupdate();
+                                dHeight);        
+        
+        if ( (d-this.lastdraw) >= (this.deltat)) {
+           //absolute value of current frame index is used
+            this.frameupdate();
+            //console.log(this.deltat);
+        }
+        this.lastdraw = d;
     }; //end draw
 }
 
@@ -194,6 +202,9 @@ var Bots = function () {
         buildbotmeta.texid = self.texid; //update the texid before creating any Animations
         //create our bots
         for (i = 0; i < self.numb; i += 1) {
+            //
+            buildbotmeta.fps = Math.random() * 15.0 + 60.0;
+            console.log(buildbotmeta.fps);
             //for each bot, an animation object is created
             anim = new Animation(buildbotmeta); //buildbotmeta contains all the data required
             //push a new bot, initialized with the animation just created
